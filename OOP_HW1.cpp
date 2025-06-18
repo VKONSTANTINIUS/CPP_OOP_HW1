@@ -1,48 +1,110 @@
-﻿#include <iostream> 
+//----------Домашнє завдання 1 ООП:
+
+// 1. Вибрано п’ять предметів з навколишнього світу.
+// 2. Для кожного предмета створено окремий клас:
+//		- Мобільний телефон    - MobilePhone;
+//		- Холодильнк           - Freezer;
+//		- Кавоварка            - Сoffee_machine;
+//		- Комп*ютер            - PersonalComputer;
+//		- Пральна машина       - Washer.
+// 3. У кожному класі створено:
+//		- 5 приватних полів, які описують характеристики предмета;
+//		- 5 публічних методів, які дозволяють взаємодіяти з предметом;
+//		- Метод для виведення загальної інформації про об*єкт.
+// 4. У функції мейн:
+//		- Створено по одній змінній кожного класу;
+//		- Заповнено поля предметів;
+//		- Викликано всі методи для кожного предмету;
+
+//----------Домашнє завдання 2 ООП:
+
+// 1. Для кожного класу додано сетери та гетери для кожного поля.
+// 2. У сетери додані перевірки введених даних;
+// 3. Гетери - константні;
+// 4. Методи перероблені з урахуванням доданих функцій;
+// 5. У функції мейн показана робота доданих сетерів і гетерів, а також перероблених функцій.
+// 6. Відкореговані "коментарі"
+
+
+#include <iostream> 
 #include <string>   
 #include <windows.h> 
 
 using namespace std;
 
-// Оголошення класу для представлення мобільного телефону
+// 1 клас - мобільний телефон
 class MobilePhone {
 private: 
-	string model = "Xiaomi_Redmi_Note_14"; // Модель телефону
-	int battery = 100; // Рівень заряду батареї у відсотках
-	int storage = 256; // Загальний обсяг пам'яті в Гб
-	int freespace = 100; // Вільний простір у відсотках
-	int internet_available = 10240; // Доступний інтернет-трафік в Мб
+	string model;    // Модель телефону
+	int battery;     // Рівень заряду батареї у відсотках
+	int storage;     // Загальний обсяг пам'яті в Гб
+	int freespace;   // Вільний простір у відсотках
+	int internet;    // Доступний інтернет в Мб
 
 public: 
-	// Метод для виведення інформації про телефон на консоль
-	void print_info() {
-		cout << "\n============================\n";
-		cout << "Модель: " << model << endl;
-		cout << "Батарея: " << battery << "%" << endl;
-		cout << "Пам'ять: " << storage << "Gb" << endl;
-		cout << "Доступно пам'яті: " << freespace << "%" << endl;
-		cout << "Доступно інтернету: " << internet_available << "Mb" << endl;
-		cout << "\n============================\n";
+	// Сетери
+	void setModel(string model = "Xiaomi_Redmi_Note_14") {
+		this->model = model;		
 	}
 
-	// Метод для зміни моделі та обсягу пам'яті телефону
-	void change_info(string m, int s) {
-		model = m;
-		storage = s;
+	void setBattery(int battery) {
+		if (battery < 0 || battery > 100) {
+			this->battery = 100;
+		}
+		else { this->battery = battery; }	
 	}
 
-	// Метод для зарядки батареї до 100%
+	void setStorage(int storage) {
+		if (storage < 0) { this->storage = 256; }
+		else { this->storage = storage; }	
+	}
+
+	void setFreespace(int freespace) {
+		if (freespace < 0 || freespace > 100) {
+			this->freespace = 90;
+		}
+		else { this->freespace = freespace; }
+	}
+
+	void setInternet(int internet) {
+		if (internet < 0) { this->internet = 10240; }
+		else { this->internet = internet; }
+	}
+
+	//Гетери
+	string getModel() const {
+		return model;
+	}
+
+	int getBattery() const {
+		return battery;
+	}
+
+	int getStorage() const {
+		return storage;
+	}
+
+	int getFreespace() const {
+		return freespace;
+	}
+
+	int getInternet() const {
+		return internet;
+	}
+
+	// Зарядка батареї 
 	void charge_battery() {
 		if (battery < 100) {
 			battery = 100;
+			cout << "телефон заряджено";
 		}
 		else cout << "телефон заряджено";
 
 	}
 
-	// Метод, що імітує гру на телефоні, зменшуючи пам'ять та заряд батареї
+	// Гра на телефоні - зменшуює пам'ять та заряд батареї
 	void play_game() {
-		if (freespace > 0 && battery > 0) {
+		if (getFreespace() > 0 && getBattery() > 0) {
 			cout << "граємо в гру" << endl;
 			freespace -= 10;
 			battery -= 5;
@@ -52,11 +114,11 @@ public:
 		}
 	}
 
-	// Метод, що імітує завантаження фото, зменшуючи інтернет-трафік та вільну пам'ять
+	// Завантаження фото - зменшуює трафік та вільну пам'ять
 	void download_foto() {
-		if (internet_available > 0 && freespace > 0) {
+		if (getInternet() > 0 && getFreespace() > 0) {
 			cout << "завантажено фото" << endl;
-			internet_available -= 5;
+			internet -= 5;
 			freespace -= 2;
 		}
 		else {
@@ -64,37 +126,99 @@ public:
 		}
 	}
 
-	// Метод, що імітує перегляд соціальних мереж, зменшуючи трафік та пам'ять
+	// Перегляд соціальних мереж - зменшуює трафік та пам'ять
 	void serf_social() {
-		if (internet_available > 0 && freespace > 0) {
-			cout << "пішли дивитись відяшки: тум тум тум сахур!!!" << endl;
-			internet_available -= 10;
+		if (getInternet() > 0 && getFreespace() > 0) {
+			cout << "Перегляд соціальних мереж" << endl;
+			internet -= 10;
 			freespace -= 5;
 		}
 		else {
 			cout << "недостатньо пам'яті або інтернету для перегляду відяшок" << endl;
 		}
 	}
+
+	// Виведення інформації 
+	void print_info() const{
+		cout << "\n============================\n";
+		cout << "Модель: " << getModel() << endl;
+		cout << "Батарея: " << getBattery() << "%" << endl;
+		cout << "Пам'ять: " << getStorage() << "Gb" << endl;
+		cout << "Доступно пам'яті: " << getFreespace() << "%" << endl;
+		cout << "Доступно інтернету: " << getInternet() << "Mb" << endl;
+		cout << "\n============================\n";
+	}
 };
 
 
-// Оголошення класу для представлення холодильника
+// 2 Клас - холодильник
 class Freezer {
 private: 
-	string brand = "Борисфен"; // Марка холодильника
-	int temperature = 3; // Температура в градусах Цельсія
-	int capasity = 150; // Загальна ємність в літрах
-	int freecapasity = 100; // Вільна ємність у відсотках
-	bool work = 0; // Стан роботи (0 - вимкнено, 1 - увімкнено)
+	string brand;        // Марка холодильника
+	int temperature;     // Температура в градусах Цельсія
+	int capasity;        // Загальна ємність в літрах
+	int freecapasity;    // Вільне місце у відсотках
+	bool work;           // Стан роботи (0 - вимкнено, 1 - увімкнено)
 
 public: 
-	// Метод для виведення інформації про холодильник
-	void print_info() {
+	//Сетери
+	void setBrand(string brand = "Борисфен") {
+		this->brand = brand;
+	}
+
+	void setTemperature(int temperature) {
+		if (temperature < -20 || temperature > 20) {
+			this->temperature = 3;
+		}
+		else { this->temperature = temperature; }
+	}
+
+	void setCapasity(int capasity) {
+		if (capasity < 0) { this->capasity = 300; }
+		else { this->capasity = capasity; }
+	}
+
+	void setFreecapasity(int freecapasity) {
+		if (freecapasity < 0 || freecapasity > 100) {
+			this->freecapasity = 90;
+		}
+		else { this->freecapasity = freecapasity; }
+	}
+
+	void setWork(bool work) {
+		if (work != 0 && work != 1) { this->work = 0; }
+		else { this->work = work; }
+	}
+
+	//Гетери
+	string getBrand() const {
+		return brand;
+	}
+
+	int getTemperature() const {
+		return temperature;
+	}
+
+	int getCapasity() const {
+		return capasity;
+	}
+
+	int getFreecapasity() const {
+		return freecapasity;
+	}
+
+	bool getWork() const {
+		return work;
+	}
+
+
+	// Інформація про холодильник
+	void print_info() const{
 		cout << "\n============================\n";
-		cout << "Модель: " << brand << endl;
-		cout << "Ємність: " << capasity << "л" << endl;
-		cout << "Вільне місце: " << freecapasity << "%" << endl;
-		cout << "Температура: " << temperature << " С" << endl;
+		cout << "Модель: " << getBrand() << endl;
+		cout << "Ємність: " << getCapasity() << "л" << endl;
+		cout << "Вільне місце: " << getFreecapasity() << "%" << endl;
+		cout << "Температура: " << getTemperature() << " С" << endl;
 		if (work) {
 			cout << "Холодильник працює" << endl;
 		}
@@ -104,17 +228,11 @@ public:
 		cout << "\n============================\n";
 	}
 
-	// Метод для зміни марки та ємності холодильника
-	void change_brand(string b, int c) {
-		brand = b;
-		capasity = c;
-	}
-
-	// Метод для увімкнення холодильника
+	// Увімкнення холодильника
 	void turn_on() {
-		if (!work) {
-			work = true;
-			temperature = 1;
+		if (getWork() == 0) {
+			setWork(1);
+			setTemperature(1);
 			cout << "Холодильник увімкнено" << endl;
 		}
 		else {
@@ -122,9 +240,9 @@ public:
 		}
 	}
 
-	// Метод, що імітує додавання їжі в холодильник
+	// Покласти їжу
 	void put_food() {
-		if (freecapasity > 0) {
+		if (getFreecapasity() > 0) {
 			cout << "Їжа покладена в холодильник" << endl;
 			freecapasity -= 10;
 		}
@@ -133,9 +251,9 @@ public:
 		}
 	}
 
-	// Метод, що імітує взяття їжі з холодильника
+	// Дістати їжу
 	void take_food() {
-		if (freecapasity < 100) {
+		if (getFreecapasity() < 100) {
 			cout << "Їжа взята з холодильника" << endl;
 			freecapasity += 10;
 		}
@@ -146,52 +264,88 @@ public:
 
 };
 
-// Оголошення класу для представлення кавоварки
-class coffee_machine {
+// 3 Клас - кавоварка
+class CoffeeMachine {
 private: 
-	string brand = "Philips"; // Марка кавоварки
-	bool water = 0; // Наявність води
-	bool coffee_beans = 0; // Наявність кавових зерен
-	bool work = 0; // Стан роботи
-	bool trash = 0; // Наявність сміття (відпрацьованої кави)
+	string brand;     // Марка кавоварки
+	bool water;       // Наявність води
+	bool coffee;      // Наявність кави
+	bool work;        // Стан роботи
+	bool trash;       // Наявність відпрацьованої кави
 
 public: 
 
-	// Метод для виведення інформації про стан кавоварки
+	//Сетери
+	void setBrand(string brand = "Philips") {
+		this->brand = brand;
+	}
+
+	void setWater(bool water) {
+		if (water != 0 && water != 1) { this->water = 0; }
+		else { this->water = water; }
+	}
+
+	void setCoffee(bool coffee) {
+		if (coffee != 0 && coffee != 1) { this->coffee = 0;	}
+		else { this->coffee = coffee; }
+	}
+
+	void setWork(bool work) {
+		if (work != 0 && work != 1) { this->work = 0; }
+		else { this->work = work; }
+	}
+	
+	void setTrash(bool trash) {
+		if (trash != 0 && trash != 1) { this->trash = 0; }
+		else { this->trash = trash; }
+	}
+
+	//Гетери
+	string getBrand() const {
+		return brand;
+	}
+
+	bool getWater() const {
+		return water;
+	}
+
+	bool getCoffee() const {
+		return coffee;
+	}
+
+	bool getWork() const {
+		return work;
+	}
+
+	bool getTrash() const {
+		return trash;
+	}
+
+	// Виведення інформації про стан кавоварки
 	void print_info() {
+
 		cout << "\n============================\n";
-		cout << "Бренд: " << brand << endl;
-		if (water) {
-			cout << "Вода є" << endl;
-		}
-		else {
-			cout << "Вода відсутня" << endl;
-		}
-		if (coffee_beans) {
-			cout << "Кавові зерна є" << endl;
-		}
-		else {
-			cout << "Кавові зерна відсутні" << endl;
-		}
-		if (work) {
-			cout << "Кавоварка працює" << endl;
-		}
-		else {
-			cout << "Кавоварка не працює" << endl;
-		}
-		if (trash) {
-			cout << "Сміття в контейнері" << endl;
-		}
-		else {
-			cout << "Контейнер чистий" << endl;
-		}
+		cout << "Бренд: " << getBrand() << endl;
+
+		if (getWater()) { cout << "Вода є" << endl; }
+		else { cout << "Вода відсутня" << endl; }
+
+		if (getCoffee()) { cout << "Кавові зерна є" << endl; }
+		else { cout << "Кавові зерна відсутні" << endl; }
+
+		if (getWork()) { cout << "Кавоварка працює" << endl; }
+		else { cout << "Кавоварка не працює" << endl; }
+
+		if (getTrash()) { cout << "Сміття в контейнері" << endl; }
+		else { cout << "Контейнер чистий" << endl; }
+
 		cout << "\n============================\n";
 	}
 
-	// Метод для додавання води
+	// Додати воду
 	void add_water() {
-		if (!water) {
-			water = true;
+		if (getWater() == 0) {
+			setWater(1);
 			cout << "Вода додана" << endl;
 		}
 		else {
@@ -199,10 +353,10 @@ public:
 		}
 	}
 
-	// Метод для додавання кавових зерен
+	// Додати каву
 	void add_coffee() {
-		if (!coffee_beans) {
-			coffee_beans = true;
+		if (getCoffee() == 0) {
+			setCoffee(1);
 			cout << "Кавові зерна додані" << endl;
 		}
 		else {
@@ -210,52 +364,36 @@ public:
 		}
 	}
 
-	// Метод для увімкнення кавоварки
+	// Увімкнути кавоварку
 	void turn_on() {
-		if (!work) {
-			if (water && coffee_beans) {
-				work = true;
-				Beep(523, 150);  
-				Beep(659, 150);
-				Beep(784, 200); Sleep(575); 
+		if (getWork() == 0) {
+			if (getWater() && getCoffee()) {
+				setWork(1);
 				cout << "Кавоварка увімкнена" << endl;
 			}
-			else {
-				cout << "Необхідно додати воду та кавові зерна" << endl;
-			}
+			else { cout << "Необхідно додати воду та кавові зерна" << endl; }
 		}
-		else {
-			cout << "Кавоварка вже працює" << endl;
-		}
+		else { cout << "Кавоварка вже працює" << endl; }
 	}
 
-	// Метод для приготування кави
+	// Приготувати каву
 	void make_coffee() {
-		if (work) {
-			if (water && coffee_beans) {
+		if (getWork()) {
+			if (getWater() && getCoffee()) {
 				cout << "Кава приготована" << endl;
-				trash = true; // Контейнер для сміття заповнюється
-				water = false; // Вода витрачається
-				coffee_beans = false; // Зерна витрачаються
-				// Відтворення мелодії
-				Beep(440, 500); Beep(440, 500); Beep(440, 500);
-				Beep(349, 350); Beep(523, 150);
-				Beep(440, 500); Beep(349, 350); Beep(523, 150);
-				Beep(440, 1000); Sleep(575);
+				setTrash(1);                            // Контейнер для сміття заповнюється
+				setWater(0);                            // Вода витрачається
+				setCoffee(0);                           // Зерна витрачаються				
 			}
-			else {
-				cout << "Необхідно додати воду та кавові зерна" << endl;
-			}
+			else { cout << "Необхідно додати воду та кавові зерна" << endl; }
 		}
-		else {
-			cout << "Кавоварка не працює" << endl;
-		}
+		else { cout << "Кавоварка не працює" << endl; }
 	}
 
-	// Метод для очищення контейнера для сміття
+	// Очистка
 	void clean() {
-		if (trash) {
-			trash = false;
+		if (getTrash()) {
+			setTrash(0);
 			cout << "Контейнер для сміття очищено" << endl;
 		}
 		else {
@@ -264,36 +402,81 @@ public:
 	}
 };
 
-// Оголошення класу для представлення персонального комп'ютера
-class personal_computer {
+// 4. Клас - персональний комп'ютер
+class PersonalComputer {
 private: 
-	bool power = 0; // Стан живлення (увімкнено/вимкнено)
-	int processor_using = 0; // Завантаження процесора у %
-	int ram_using = 0; // Використання оперативної пам'яті у %
-	int videocard_using = 0; // Завантаження відеокарти у %
-	int hdd_using = 20; // Використання жорсткого диска у %
+	bool power;            // Стан живлення (увімкнено/вимкнено)
+	int processor;         // Завантаження процесора у %
+	int ram;               // Використання оперативної пам'яті у %
+	int videocard;         // Завантаження відеокарти у %
+	int hdd;               // Використання жорсткого диска у %
 
 public: 
-	// Метод для виведення інформації про стан комп'ютера
+
+	//Сетери
+	void setPower(bool power) {
+		if (power != 0 && power != 1) { this->power = 0; }
+		else { this->power = power; }
+	}
+
+	void setProcessor(int processor) {
+		if ((processor < 0 || processor > 100)) { this->processor = 50; }
+		else { this->processor = processor; }
+	}
+
+	void setRam(int ram) {
+		if ((ram < 0 || ram > 100)) { this->ram = 30; }
+		else { this->ram = ram; }
+	}
+
+	void setVideocard(int videocard) {
+		if ((videocard < 0 || videocard > 100)) { this->videocard = 20; }
+		else { this->videocard = videocard; }
+	}
+
+	void setHdd(int hdd) {
+		if ((hdd < 0 || hdd > 100)) { this->hdd = 10; }
+		else { this->hdd = hdd; }
+	}
+
+	//Гетери
+	bool getPower() const {
+		return power;
+	}
+
+	int getProcessor() const {
+		return processor;
+	}
+
+	int getRam() const {
+		return ram;
+	}
+
+	int getVideocard() const {
+		return videocard;
+	}	
+
+	int getHdd() const {
+		return hdd;
+	}
+
+	// Виведення інформації про стан комп'ютера
 	void print_info() {
 		cout << "\n============================\n";
-		if (power) {
-			cout << "Комп'ютер увімкнено" << endl;
-		}
-		else {
-			cout << "Комп'ютер вимкнено" << endl;
-		}
-		cout << "Використання процесора: " << processor_using << "%" << endl;
-		cout << "Використання оперативної пам'яті: " << ram_using << "%" << endl;
-		cout << "Використання відеокарти: " << videocard_using << "%" << endl;
-		cout << "Використання жорсткого диска: " << hdd_using << "%" << endl;
+		if (getPower()) { cout << "Комп'ютер увімкнено" << endl; }
+		else { cout << "Комп'ютер вимкнено" << endl; }
+
+		cout << "Використання процесора: " << getProcessor() << "%" << endl;
+		cout << "Використання оперативної пам'яті: " << getRam() << "%" << endl;
+		cout << "Використання відеокарти: " << getVideocard() << "%" << endl;
+		cout << "Використання жорсткого диска: " << getHdd() << "%" << endl;
 		cout << "\n============================\n";
 	}
 
-	// Метод для увімкнення комп'ютера
+	// Увімкнути комп'ютер
 	void turn_on() {
-		if (!power) {
-			power = true;
+		if (getPower() == 0 ) {
+			setPower(1);
 			cout << "Комп'ютер увімкнено" << endl;
 		}
 		else {
@@ -301,49 +484,42 @@ public:
 		}
 	}
 
-	// Метод, що імітує серфінг в інтернеті, збільшуючи навантаження на компоненти
+	// Використання інтернету 
 	void serf_internet() {
-		if (power) {
+		if (getPower()) {
 			cout << "Ви полізли в інтернет" << endl;
-			processor_using += 10;
-			ram_using += 20;
-			videocard_using += 5;
-			hdd_using += 2;
+			processor += 10;
+			ram += 20;
+			videocard += 5;
+			hdd += 2;
 		}
 		else {
 			cout << "Комп'ютер вимкнено, увімкніть його" << endl;
 		}
 	}
 
-	// Метод, що імітує гру, значно збільшуючи навантаження на компоненти
+	// Компьютерна гра
 	void play_game() {
-		if (power) {
+		if (getPower()) {
 			cout << "Ви граєте в гру" << endl;
-			processor_using += 20;
-			ram_using += 30;
-			videocard_using += 40;
-			hdd_using += 10;
-			Beep(660, 100); Sleep(100);
-			Beep(660, 100); Sleep(300);
-			Beep(660, 100); Sleep(300);
-			Beep(510, 100); Sleep(100);
-			Beep(660, 100); Sleep(300);
-			Beep(770, 100); Sleep(550);
-			Beep(380, 100); Sleep(575);
+			processor += 20;
+			ram += 30;
+			videocard += 40;
+			hdd += 10;			
 		}
 		else {
 			cout << "Комп'ютер вимкнено, увімкніть його" << endl;
 		}
 	}
 
-	// Метод, що імітує завантаження фільму
+	// Завантаження фільму
 	void download_movie() {
-		if (power) {
+		if (getPower()) {
 			cout << "Ви завантажили фільм" << endl;
-			processor_using += 5;
-			ram_using += 10;
-			videocard_using += 5;
-			hdd_using += 25;
+			processor += 5;
+			ram += 10;
+			videocard += 5;
+			hdd += 25; 
 		}
 		else {
 			cout << "Комп'ютер вимкнено, увімкніть його" << endl;
@@ -351,62 +527,87 @@ public:
 	}
 };
 
-// Оголошення класу для представлення пральної машини
-class washer {
+// 5. Клас - пральна машина
+class Washer {
 private: 
-	string brand = "LG"; // Марка пральної машини
-	bool capasity = 0; // Наявність білизни
-	bool powder = 0; // Наявність порошку
-	int temperature = 30; // Температура прання
-	bool work = 0; // Стан роботи
+	string brand = "LG";       // Марка пральної машини
+	bool capasity = 0;         // Наявність білизни
+	bool powder = 0;           // Наявність порошку
+	int temperature = 30;      // Температура прання
+	bool work = 0;             // Стан роботи
 
 public: 
-	// Метод для виведення інформації про стан пральної машини
+
+	//Сетери
+	void setBrand(string brand = "LG") {
+		this->brand = brand;
+	}
+
+	void setCapasity(bool capasity) {
+		if (capasity != 0 && capasity != 1) { this->capasity = 0; }
+		else { this->capasity = capasity; }
+	}
+
+	void setPowder(bool powder) {
+		if (powder != 0 && powder != 1) { this->powder = 0; }
+		else { this->powder = powder; }
+	}
+
+	void setTemperature(int temperature) {
+		if ((temperature < 0 || temperature > 100)) { this->temperature = 30; }
+		else { this->temperature = temperature; }
+	}
+
+	void setWork(bool work) {
+		if (work != 0 && work != 1) { this->work = 0; }
+		else { this->work = work; }
+	}
+
+	//Гетери
+	string getBrand() const {
+		return brand;
+	}
+
+	bool getCapasity() const {
+		return capasity;
+	}
+
+	bool getPowder() const {
+		return powder;
+	}
+
+	int getTemperature() const {
+		return temperature;
+	}
+
+	bool getWork() const {
+		return work;
+	}
+
+	// Виведення інформації про пральну машину
 	void print_info() {
 		cout << "\n============================\n";
-		cout << "Бренд: " << brand << endl;
-		if (capasity) {
-			cout << "Завантаження білизни є" << endl;
-		}
-		else {
-			cout << "Завантаження білизни відсутнє" << endl;
-		}
-		if (powder) {
-			cout << "Пральний порошок додано" << endl;
-		}
-		else {
-			cout << "Пральний порошок відсутній" << endl;
-		}
-		cout << "Температура прання: " << temperature << " С" << endl;
-		if (work) {
-			cout << "Пральна машина працює" << endl;
-		}
-		else {
-			cout << "Пральна машина не працює" << endl;
-		}
+
+		cout << "Бренд: " << getBrand() << endl;
+
+		if (getCapasity()) { cout << "Білизна завантажена" << endl; }
+		else { cout << "Білизна відсутня" << endl; }
+
+		if (getPowder()) { cout << "Пральний порошок додано" << endl; }
+		else { cout << "Пральний порошок відсутній" << endl; }
+
+		cout << "Температура прання: " << getTemperature() << " С" << endl;
+
+		if (getWork()) { cout << "Пральна машина працює" << endl; }
+		else { cout << "Пральна машина не працює" << endl; }
+
 		cout << "\n============================\n";
 	}
 
-	// Метод для зміни марки пральної машини
-	void change_brand(string b) {
-		brand = b;
-	}
-
-	// Метод для зміни температури прання з перевіркою діапазону
-	void change_temperature(int t) {
-		if (t >= 30 && t <= 90) {
-			temperature = t;
-			cout << "Температура прання змінена на " << temperature << " С" << endl;
-		}
-		else {
-			cout << "Недійсна температура. Введіть значення від 30 до 90 градусів." << endl;
-		}
-	}
-
-	// Метод для додавання білизни
+	// Додати білизну
 	void add_clothes() {
-		if (!capasity) {
-			capasity = true;
+		if (!getCapasity()) {
+			setCapasity(1);
 			cout << "Білизна додана до пральної машини" << endl;
 		}
 		else {
@@ -414,10 +615,10 @@ public:
 		}
 	}
 
-	// Метод для додавання прального порошку
+	// Додати пральний порошок
 	void add_powder() {
-		if (!powder) {
-			powder = true;
+		if (!getPowder()) {
+			setPowder(1);
 			cout << "Пральний порошок додано" << endl;
 		}
 		else {
@@ -425,11 +626,11 @@ public:
 		}
 	}
 
-	// Метод для увімкнення пральної машини
+	// Увімкнути пральну машину
 	void turn_on() {
-		if (!work) {
-			if (capasity && powder) {
-				work = true;
+		if (!getWork()) {
+			if (getCapasity() && getPowder()) {
+				setWork(1);
 				cout << "Пральна машина увімкнена" << endl;
 			}
 			else {
@@ -441,14 +642,14 @@ public:
 		}
 	}
 
-	// Метод, що імітує режим делікатного прання
+	// Режим делікатного прання
 	void delicate_wash() {
-		if (work) {
-			if (capasity && powder) {
+		if (getWork()) {
+			if (getCapasity() && getPowder()) {
 				cout << "Делікатне прання завершено" << endl;
-				capasity = false;
-				powder = false;
-				work = false;
+				setCapasity(0);
+				setPowder(0);
+				setWork(0);
 			}
 			else {
 				cout << "Необхідно додати білизну та пральний порошок" << endl;
@@ -459,14 +660,14 @@ public:
 		}
 	}
 
-	// Метод, що імітує режим швидкого прання
+	// Режим швидкого прання
 	void fast_wash() {
-		if (work) {
-			if (capasity && powder) {
+		if (getWork()) {
+			if (getCapasity() && getPowder()) {
 				cout << "Швидке прання завершено" << endl;
-				capasity = false;
-				powder = false;
-				work = false;
+				setCapasity(0);
+				setPowder(0);
+				setWork(0);
 			}
 			else {
 				cout << "Необхідно додати білизну та пральний порошок" << endl;
@@ -484,76 +685,92 @@ int main() {
 	
 	SetConsoleOutputCP(1251);
 
-	// --- Демонстрація роботи класу MobilePhone ---
-	MobilePhone myphone; // Створення об'єкта класу MobilePhone
+	//--- Клас Телефон ---
+	MobilePhone myphone;                // Створення об'єкта  
 
-	myphone.print_info(); // Виведення початкової інформації
-	myphone.change_info("Samsung_S23", 256); // Зміна параметрів телефону
-	myphone.print_info(); // Виведення оновленої інформації
+	myphone.setModel();
+	myphone.setBattery(90);
+	myphone.setFreespace(70);
+	myphone.setInternet(5120);
+	myphone.setStorage(128);
 
-	myphone.download_foto(); // Завантаження фото
+	myphone.print_info();               // Перевірка стану
+	myphone.setModel("Samsung_S23");    // Зміна назви
+	myphone.print_info();                
 
-	myphone.play_game(); // Гра на телефоні
-	myphone.print_info(); // Перевірка стану після гри
+	myphone.download_foto();            // Завантаження фото
+	myphone.play_game();                // Гра на телефоні
+	myphone.serf_social();              // Перегляд соцмереж
+	myphone.print_info();                
+	myphone.charge_battery();           // Зарядка телефону
+	myphone.print_info();                
 
-	myphone.serf_social(); // Перегляд соцмереж
-	myphone.print_info(); // Перевірка стану
+	// --- Клас холодильник ---
+	Freezer holodok;                    // Створення об'єкта  
 
-	myphone.charge_battery(); // Зарядка телефону
-	myphone.print_info(); // Перевірка стану після зарядки
+	holodok.setBrand();
+	holodok.setCapasity(250);
+	holodok.setFreecapasity(90);
+	holodok.setTemperature(1);
+	holodok.setWork(0);
 
-	// --- Демонстрація роботи класу Freezer ---
-	Freezer holodok; // Створення об'єкта класу Freezer
+	holodok.print_info();               // Перевірка стану
+	holodok.setBrand("Saturn");         // Зміна назви
+	holodok.print_info();                
 
-	holodok.print_info(); // Виведення початкової інформації
-	holodok.change_brand("Saturn", 200); // Зміна параметрів
-	holodok.print_info(); // Виведення оновленої інформації
+	holodok.turn_on();                  // Увімкнення
+	holodok.put_food();                 // Додавання їжі
+	holodok.print_info();                
 
-	holodok.turn_on(); // Увімкнення
-	holodok.put_food(); // Додавання їжі
-	holodok.print_info(); // Перевірка стану
+	holodok.take_food();                // Взяття їжі
+	holodok.take_food();                 
+	holodok.print_info();               
 
-	holodok.take_food(); // Взяття їжі
-	holodok.take_food(); // Ще раз взяття їжі
-	holodok.print_info(); // Перевірка стану
+	// --- Клас кавомашина ---
+	CoffeeMachine coffeeyok;           // Створення об'єкта  
 
-	// --- Демонстрація роботи класу coffee_machine ---
-	coffee_machine coffeeyok; // Створення об'єкта класу coffee_machine
+	coffeeyok.print_info();             // Перевірка стану
+	coffeeyok.make_coffee();            // Приготування кави
 
-	coffeeyok.print_info(); // Виведення початкового стану
-	coffeeyok.make_coffee(); // Спроба зробити каву без інгредієнтів
+	coffeeyok.add_water();              // Додавання води
+	coffeeyok.add_coffee();             // Додавання зерен
+	coffeeyok.turn_on();                // Увімкнення
 
-	coffeeyok.add_water(); // Додавання води
-	coffeeyok.add_coffee(); // Додавання зерен
-	coffeeyok.turn_on(); // Увімкнення
+	coffeeyok.print_info();              
+	coffeeyok.make_coffee();             
 
-	coffeeyok.print_info(); // Перевірка стану готовності
-	coffeeyok.make_coffee(); // Приготування кави
+	coffeeyok.print_info();              
+	coffeeyok.clean();                 // Очищення
 
-	coffeeyok.print_info(); // Перевірка стану після приготування
-	coffeeyok.clean(); // Очищення
+	// --- Клас комп*ютер ---
+	PersonalComputer comp;        // Створення об'єкта  
 
-	// --- Демонстрація роботи класу personal_computer ---
-	personal_computer pekarnya; // Створення об'єкта класу personal_computer
+	comp.setPower(0);
+	comp.setHdd(20);
+	comp.setProcessor(0);
+	comp.setRam(0);
+	comp.setVideocard(0);
 
-	pekarnya.print_info(); // Початковий стан
-	pekarnya.play_game(); // Спроба пограти на вимкненому ПК
-	pekarnya.turn_on(); // Увімкнення
-	pekarnya.serf_internet(); // Серфінг в інтернеті
-	pekarnya.play_game(); // Гра
-	pekarnya.download_movie(); // Завантаження фільму
-	pekarnya.print_info(); // Перевірка навантаження на систему
+	comp.print_info();             // Перевірка стану
+	comp.play_game();              // Грати в гру
+	comp.turn_on();                // Увімкнути
+	comp.serf_internet();          // Інтернет
+	comp.play_game();  
+	comp.download_movie();         // Завантаження фільму
+	comp.print_info();             // Перевірка стану
 
-	// --- Демонстрація роботи класу washer ---
-	washer stiralka; // Створення об'єкта класу washer
-	stiralka.print_info(); // Початковий стан
-	stiralka.change_brand("Bosch"); // Зміна марки
-	stiralka.change_temperature(60); // Зміна температури
-	stiralka.print_info(); // Перевірка змін
-	stiralka.add_clothes(); // Додавання білизни
-	stiralka.add_powder(); // Додавання порошку
-	stiralka.turn_on(); // Увімкнення
-	stiralka.print_info(); // Перевірка стану перед пранням
-	stiralka.delicate_wash(); // Запуск делікатного прання
-	stiralka.fast_wash(); // Спроба запустити прання, коли машина вже завершила цикл і вимкнулась
+	// --- Клас пральна машина ---
+	Washer stiralka;                   // Створення об'єкта  
+	stiralka.print_info();             // Перевірка стану
+	stiralka.setBrand("Bosch");        // Зміна марки
+	stiralka.setTemperature(60);       // Зміна температури
+
+	stiralka.print_info();  
+	stiralka.add_clothes();            // Додати білизни
+	stiralka.add_powder();             // Додати порошку
+	stiralka.turn_on();                // Увімкнути
+
+	stiralka.print_info();  
+	stiralka.delicate_wash();          // Делікатне прання
+	stiralka.fast_wash();              // Швидке прання 
 }
