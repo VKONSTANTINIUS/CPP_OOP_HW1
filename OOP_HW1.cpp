@@ -25,6 +25,21 @@
 // 5. У функції мейн показана робота доданих сетерів і гетерів, а також перероблених функцій.
 // 6. Відкореговані "коментарі"
 
+//----------Домашнє завдання 3 ООП:
+// 1. Додано поля-покажчики:
+//    - для класу MobilePhone поле phonesystem;
+//    - для класу CoffeeMachine поле room;
+// 2. Для полів-покажчиків:
+//    - Створено сетери і гетери;
+//    - Виділена пам*ять;
+//    - Вивільнена пам*ять в деструкторі.
+// 3. Створено конструктори класів:
+//    - конструктор з параметрами;
+//    - конструктор делегування;
+//    - конструктор копіювання;
+// 4. Створено деструктори для об*єктів класів.
+// 5. У функції мейн показана робота конструкторів.
+
 
 #include <iostream> 
 #include <string>   
@@ -35,14 +50,63 @@ using namespace std;
 // 1 клас - мобільний телефон
 class MobilePhone {
 private: 
-	string model;    // Модель телефону
-	int battery;     // Рівень заряду батареї у відсотках
-	int storage;     // Загальний обсяг пам'яті в Гб
-	int freespace;   // Вільний простір у відсотках
-	int internet;    // Доступний інтернет в Мб
+	string model;                  // Модель телефону
+	int battery;                   // Рівень заряду батареї у відсотках
+	int storage;                   // Загальний обсяг пам'яті в Гб
+	int freespace;                 // Вільний простір у відсотках
+	int internet;                  // Доступний інтернет в Мб
+
+	char* phonesystem = nullptr;   // Операційна система телефону (поле покажчик)
 
 public: 
+	// Конструктор за замовчуванням що делегує роботу конструктору з параметрами
+	MobilePhone(): MobilePhone("Xiaomi_Redmi_Note_14", 100, 256, 90, 10240, "android")  {
+
+		cout << "конструктор делегування, адреса -  " << this << endl;	
+
+	}
+	// Конструктор з параметрами
+	MobilePhone(string model, int battery, int storage, int freespace, int internet, const char* phsys) {
+
+		cout << "конструктор з параметрами, адреса -  " << this << endl;
+
+		setModel(model);
+		setBattery(battery);
+		setStorage(storage);
+		setFreespace(freespace);
+		setInternet(internet);
+		setPhoneSystem(phsys);			
+
+	}
+	// Конструктор копіювання
+	MobilePhone(const MobilePhone& copy) {
+		cout << "конструктор копіювання, адреса -  " << this << endl;
+		model = copy.model;
+		battery = copy.battery;
+		storage = copy.storage;
+		freespace = copy.freespace;
+		internet = copy.internet;
+
+		phonesystem = new char[strlen(copy.phonesystem) + 1];
+		strcpy_s(phonesystem, strlen(copy.phonesystem) + 1, copy.phonesystem);
+
+	}
+	// Деструктор
+	~MobilePhone() {
+		cout << "деструктор для адреси - " << this << endl;
+		delete[] phonesystem;
+
+	}
+
 	// Сетери
+
+	void setPhoneSystem(const char* newPhsys) {
+		delete[] phonesystem;
+		phonesystem = new char[strlen(newPhsys) + 1];
+		strcpy_s(phonesystem, strlen(newPhsys) + 1, newPhsys);
+		
+	}
+
 	void setModel(string model = "Xiaomi_Redmi_Note_14") {
 		this->model = model;		
 	}
@@ -72,6 +136,11 @@ public:
 	}
 
 	//Гетери
+	const char* getPhoneSystem() const {
+		return phonesystem;
+
+	}
+
 	string getModel() const {
 		return model;
 	}
@@ -146,6 +215,7 @@ public:
 		cout << "Пам'ять: " << getStorage() << "Gb" << endl;
 		cout << "Доступно пам'яті: " << getFreespace() << "%" << endl;
 		cout << "Доступно інтернету: " << getInternet() << "Mb" << endl;
+		cout << "Операційна система " << getPhoneSystem() << endl;
 		cout << "\n============================\n";
 	}
 };
@@ -161,6 +231,32 @@ private:
 	bool work;           // Стан роботи (0 - вимкнено, 1 - увімкнено)
 
 public: 
+	// Конструктор з параметрами
+	Freezer(string brand, int temperature, int capasity, int freecapasity, bool work) {
+		
+		cout << "конструктор з параметрами, адреса -  " << this << endl;
+
+		setBrand(brand);
+		setTemperature(temperature);
+		setCapasity(capasity);
+		setFreecapasity(freecapasity);
+		setWork(work);
+	}
+	// Конструктор делегування
+	Freezer() : Freezer("bosch", 2, 300, 90, 1) {
+		cout << "конструктор делегування, адреса -  " << this << endl;
+
+	}
+	// Конструктор копіювання - створення копії через делегування
+	Freezer(const Freezer& copy) : Freezer(copy.brand, copy.temperature, copy.capasity, copy.freecapasity, copy.work) {
+		cout << "конструктор копіювання, адреса - " << this << endl;
+	}
+
+	// Деструктор 
+	~Freezer() {
+		cout << "деструктор для адреси - " << this << endl;
+
+	}
 	//Сетери
 	void setBrand(string brand = "Борисфен") {
 		this->brand = brand;
@@ -273,9 +369,54 @@ private:
 	bool work;        // Стан роботи
 	bool trash;       // Наявність відпрацьованої кави
 
-public: 
+	char* room = nullptr;
 
+public: 
+	// Конструктор з параметрами
+	CoffeeMachine(string brand, bool water, bool coffee, bool work, bool trash, const char* r) {
+		
+		cout << "конструктор з параметрами, адреса -  " << this << endl;
+
+		setRoom(r);
+		setBrand(brand);
+		setWater(water);
+		setCoffee(coffee);
+		setWork(work);
+		setTrash(trash);
+	}
+	// Конструктор за замовчуванням що делегує роботу конструктору з параметрами
+	CoffeeMachine() : CoffeeMachine("Philips", 0, 0, 0, 0, "Kitchen") {
+
+		cout << "конструктор делегування, адреса -  " << this << endl;
+	}
+	// Конструктор копіювання
+	CoffeeMachine(CoffeeMachine& second) {
+
+		cout << "конструктор копіювання, адреса -  " << this << endl;
+
+		brand = second.brand;
+		water = second.water;
+		coffee = second.coffee;
+		work = second.work;
+		trash = second.trash;
+		room = new char[strlen(second.room) + 1];
+		strcpy_s(room, strlen(second.room) + 1, second.room);
+
+	}
+	// Деструктор
+	~CoffeeMachine() {
+		cout << "деструктор для адреси - " << this << endl;
+		delete[] room;
+
+	}
 	//Сетери
+	void setRoom(const char* newRoom) {
+		delete[] room;
+		room = new char[strlen(newRoom) + 1];
+		strcpy_s(room, strlen(newRoom) + 1, newRoom);
+
+	}
+
 	void setBrand(string brand = "Philips") {
 		this->brand = brand;
 	}
@@ -301,6 +442,12 @@ public:
 	}
 
 	//Гетери
+
+	const char* getRoom() const {
+		return room;
+
+	}
+
 	string getBrand() const {
 		return brand;
 	}
@@ -339,6 +486,7 @@ public:
 		if (getTrash()) { cout << "Сміття в контейнері" << endl; }
 		else { cout << "Контейнер чистий" << endl; }
 
+		cout << "Місце знаходження " << room;
 		cout << "\n============================\n";
 	}
 
@@ -412,6 +560,31 @@ private:
 	int hdd;               // Використання жорсткого диска у %
 
 public: 
+	// Конструктор з параметрами
+	PersonalComputer(bool power, int processor, int ram, int videocard, int hdd) {
+
+		cout << "конструктор з параметрами, адреса -  " << this << endl;
+
+		setPower(power);
+		setProcessor(processor);
+		setRam(ram);
+		setVideocard(videocard);
+		setHdd(hdd);
+	}
+
+	// Конструктор делегування
+	PersonalComputer() : PersonalComputer(0, 0, 0, 0, 30) {
+		cout << "конструктор делегування, адреса -  " << this << endl;
+	}
+
+	// Конструктор копіювання
+	PersonalComputer(PersonalComputer& pk2) : PersonalComputer(pk2.power, pk2.processor, pk2.ram, pk2.videocard, pk2.hdd) {
+		cout << "конструктор копіювання, адреса - " << this << endl;
+	}
+
+	~PersonalComputer() {
+		cout << "деструктор для адреси - " << this << endl;
+	}
 
 	//Сетери
 	void setPower(bool power) {
@@ -530,16 +703,41 @@ public:
 // 5. Клас - пральна машина
 class Washer {
 private: 
-	string brand = "LG";       // Марка пральної машини
-	bool capasity = 0;         // Наявність білизни
-	bool powder = 0;           // Наявність порошку
-	int temperature = 30;      // Температура прання
-	bool work = 0;             // Стан роботи
+	string brand;          // Марка пральної машини
+	bool capasity;         // Наявність білизни
+	bool powder;           // Наявність порошку
+	int temperature;       // Температура прання
+	bool work;             // Стан роботи
 
 public: 
+	// Конструктор з параметрами
+	Washer(string brand, bool capasity, bool powder, int temperature, bool work) {
+
+		cout << "конструктор з параметрами, адреса -  " << this << endl;
+
+		setBrand(brand);
+		setCapasity(capasity);
+		setPowder(powder);
+		setTemperature(temperature);
+		setWork(work);
+	}
+	// Конструктор делегування
+	Washer(): Washer("Beko", 0, 0, 10, 0) {
+		cout << "конструктор делегування, адреса -  " << this << endl;
+
+	}
+	// Конструктор копіювання
+	Washer(Washer& copy) : Washer(copy.brand, copy.capasity, copy.powder, copy.temperature, copy.work) {
+		cout << "конструктор копіювання, адреса - " << this << endl;
+
+	}
+	~Washer() {
+		cout << "деструктор для адреси - " << this << endl;
+
+	}
 
 	//Сетери
-	void setBrand(string brand = "LG") {
+	void setBrand(string brand) {
 		this->brand = brand;
 	}
 
@@ -686,91 +884,87 @@ int main() {
 	SetConsoleOutputCP(1251);
 
 	//--- Клас Телефон ---
-	MobilePhone myphone;                // Створення об'єкта  
+	MobilePhone myphone;                                      // Створення об'єкта  
+	myphone.print_info();                                     // Перевірка стану
 
-	myphone.setModel();
-	myphone.setBattery(90);
-	myphone.setFreespace(70);
-	myphone.setInternet(5120);
-	myphone.setStorage(128);
+	MobilePhone se("samsung", 80, 128, 80, 5000, "Windows");  // Створення об'єкта з параметрами 
+	se.print_info();										  // Створення об'єкта-копії
 
-	myphone.print_info();               // Перевірка стану
-	myphone.setModel("Samsung_S23");    // Зміна назви
-	myphone.print_info();                
+	MobilePhone secopy = se;
+	secopy.print_info();	
 
-	myphone.download_foto();            // Завантаження фото
-	myphone.play_game();                // Гра на телефоні
-	myphone.serf_social();              // Перегляд соцмереж
-	myphone.print_info();                
-	myphone.charge_battery();           // Зарядка телефону
-	myphone.print_info();                
+	myphone.download_foto();                                  // Завантаження фото
+	myphone.play_game();                                      // Гра на телефоні
+	myphone.serf_social();                                    // Перегляд соцмереж	        
+	myphone.charge_battery();								  // Зарядка телефону
+	myphone.print_info();            
+	
 
 	// --- Клас холодильник ---
-	Freezer holodok;                    // Створення об'єкта  
+	Freezer holodok;                                          // Створення об'єкта  
+	holodok.print_info();									  // Перевірка стану
 
-	holodok.setBrand();
-	holodok.setCapasity(250);
-	holodok.setFreecapasity(90);
-	holodok.setTemperature(1);
-	holodok.setWork(0);
+	Freezer samsung("Samsung", 5, 250, 50, 0);		          // Створення об'єкта з параметрами 
+	samsung.print_info();
 
-	holodok.print_info();               // Перевірка стану
-	holodok.setBrand("Saturn");         // Зміна назви
-	holodok.print_info();                
+	Freezer copysam = samsung;							      // Створення об'єкта-копії 
+	copysam.print_info();
 
-	holodok.turn_on();                  // Увімкнення
-	holodok.put_food();                 // Додавання їжі
-	holodok.print_info();                
-
-	holodok.take_food();                // Взяття їжі
+	holodok.turn_on();									      // Увімкнення
+	holodok.put_food();								  	      // Додавання їжі
+	holodok.take_food();									  // Взяття їжі
 	holodok.take_food();                 
 	holodok.print_info();               
 
 	// --- Клас кавомашина ---
-	CoffeeMachine coffeeyok;           // Створення об'єкта  
+	CoffeeMachine coffeeyok;                                  // Створення об'єкта  
+	coffeeyok.print_info();                                   // Перевірка стану
 
-	coffeeyok.print_info();             // Перевірка стану
-	coffeeyok.make_coffee();            // Приготування кави
+	CoffeeMachine sim("Siemens", 1, 1, 0, 0, "Livingroom");   // Створення об'єкта з параметрами
+	sim.print_info();
 
-	coffeeyok.add_water();              // Додавання води
-	coffeeyok.add_coffee();             // Додавання зерен
-	coffeeyok.turn_on();                // Увімкнення
-
+	CoffeeMachine sim2 = sim;								  // Створення об'єкта-копії
+	sim2.print_info();
+		      
+	coffeeyok.add_water();								     // Додавання води
+	coffeeyok.add_coffee();							  	     // Додавання зерен
+	coffeeyok.turn_on();									 // Увімкнення
+		          
+	coffeeyok.make_coffee();							     // Приготування кави  
 	coffeeyok.print_info();              
-	coffeeyok.make_coffee();             
-
-	coffeeyok.print_info();              
-	coffeeyok.clean();                 // Очищення
+	coffeeyok.clean();									     // Очищення
 
 	// --- Клас комп*ютер ---
-	PersonalComputer comp;        // Створення об'єкта  
+	PersonalComputer comp;                                  // Створення об'єкта  
+	comp.print_info();                                      // Перевірка стану
 
-	comp.setPower(0);
-	comp.setHdd(20);
-	comp.setProcessor(0);
-	comp.setRam(0);
-	comp.setVideocard(0);
+	PersonalComputer note(1, 30, 20, 10, 45);               // Створення об'єкта з параметрами
+	note.print_info();
 
-	comp.print_info();             // Перевірка стану
-	comp.play_game();              // Грати в гру
-	comp.turn_on();                // Увімкнути
-	comp.serf_internet();          // Інтернет
-	comp.play_game();  
-	comp.download_movie();         // Завантаження фільму
-	comp.print_info();             // Перевірка стану
+	PersonalComputer copynote = note;                       // Створення об'єкта-копії
+	copynote.print_info();
+
+	comp.play_game();                                      // Грати в гру
+	comp.turn_on();                                        // Увімкнути
+	comp.serf_internet();                                  // Інтернет	 
+	comp.download_movie();                                 // Завантаження фільму
+	comp.print_info();                                     // Перевірка стану
 
 	// --- Клас пральна машина ---
-	Washer stiralka;                   // Створення об'єкта  
-	stiralka.print_info();             // Перевірка стану
-	stiralka.setBrand("Bosch");        // Зміна марки
-	stiralka.setTemperature(60);       // Зміна температури
+	Washer stiralka;                                       // Створення об'єкта  
+	stiralka.print_info();                                 // Перевірка стану
 
-	stiralka.print_info();  
-	stiralka.add_clothes();            // Додати білизни
-	stiralka.add_powder();             // Додати порошку
-	stiralka.turn_on();                // Увімкнути
+	Washer ind("Indesit", 1, 0, 40, 0);                    // Створення об'єкта з параметрами
+	ind.print_info();
 
+	Washer otherind = ind;                                 // Створення об'єкта-копії
+	otherind.print_info();
+		
+	stiralka.add_clothes();                                 // Додати білизни
+	stiralka.add_powder();                                  // Додати порошку
+	stiralka.turn_on();                                     // Увімкнути
+	stiralka.delicate_wash();                               // Делікатне прання
 	stiralka.print_info();  
-	stiralka.delicate_wash();          // Делікатне прання
-	stiralka.fast_wash();              // Швидке прання 
+	
+	
 }
